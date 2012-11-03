@@ -17,6 +17,7 @@ indent_mode=2
 name=pygtk-studio
 base_path=/home/raga/py/
 description=
+file_patterns=
 
 [long line marker]
 long_line_behaviour=1
@@ -24,7 +25,7 @@ long_line_column=72
 
 [files]
 current_page=0
-FILE_NAME_0=22033;Python;0;16;1;1;0;%2Fhome%2Fraga%2Fpy%2Fpygtk_studio.py;0;4
+FILE_NAME_0=6438;Python;0;16;1;1;0;%2Fhome%2Fraga%2Fpy%2Fpygtk_studio.py;0;4
 
 [VTE]
 last_dir=/home/raga

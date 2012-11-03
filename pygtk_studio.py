@@ -136,25 +136,59 @@ class Presentazione(gtk.Window):
 		
 #Window per applicazione startata.
 #Il 'title' e le proprietà sono nel file UI_FILE_...--->src/pygtk_studio.ui
-class GUI_git(gtk.Window):
-    def __init__(self):
-        super(GUI_git, self).__init__()
-#        self.connect("destroy", gtk.main_quit)
-        self.set_default_size(800,95)
-#        self.set_size_request(250, 150)
-        self.set_position(gtk.WIN_POS_CENTER)
-        fixed = gtk.Fixed()
+class GUI_git:
+	def __init__(self):
+		self.win = gtk.Window(gtk.WINDOW_TOPLEVEL)
+		self.win.connect("delete_event", self.delete_event)
+		self.win.connect("destroy", self.destroy)
+		self.win.set_position(gtk.WIN_POS_CENTER)
+		self.win.set_resizable(gtk.FALSE)
+		self.win.set_border_width(10)
+		self.vbox = gtk.VBox(gtk.TRUE, 3)
+		self.win.add(self.vbox)
+		self.vbox.show()
 
-        git = gtk.Button("push")
-        fixed.put(git, 10, 10)
+		self.button_r1 = gtk.RadioButton(None, "primo", gtk.FALSE)
+		self.button_r1.connect("toggled", self.tog, "primo")
+		self.button_r2 = gtk.RadioButton(self.button_r1, "secondo")
+		self.button_r2.connect("toggled", self.tog, "secondo")
+		self.button_r3 = gtk.RadioButton(self.button_r1, "terzo")
+		self.button_r3.connect("toggled", self.tog, "terzo")
 
-        blog = gtk.Button("clone")
-        fixed.put(blog, 10, 50)
+		self.button_t1 = gtk.ToggleButton("primo toggle")
+		self.button_t1.connect("toggled", self.tog, "primo toggle")
+		self.button_t2 = gtk.ToggleButton("secondo toggle")
+		self.button_t2.connect("toggled", self.tog, "secondo toggle")
+		self.button_dl = gtk.Button("Download")
+		self.button_dl.connect("clicked", self.tog, "Download")
+		self.button_ul = gtk.Button("Upload")
+		self.button_ul.connect("clicked", self.tog, "Upload")
 
-        self.add(fixed)
+		self.buttonQuit = gtk.Button(None, gtk.STOCK_QUIT)
+		self.buttonQuit.connect("clicked", self.destroy)
 
-#        box = gtk.Box(spacing=6)
-#        self.add(box)
+		self.vbox.pack_start(self.button_r1, gtk.TRUE, gtk.TRUE, 5)
+		self.vbox.pack_start(self.button_r2, gtk.TRUE, gtk.TRUE, 5)
+		self.vbox.pack_start(self.button_r3, gtk.TRUE, gtk.TRUE, 5)
+		self.vbox.pack_start(self.button_t1, gtk.TRUE, gtk.TRUE, 5)
+		self.vbox.pack_start(self.button_t2, gtk.TRUE, gtk.TRUE, 5)
+		self.vbox.pack_start(self.button_dl, gtk.TRUE, gtk.TRUE, 5)
+		self.vbox.pack_start(self.button_ul, gtk.TRUE, gtk.TRUE, 5)
+		self.vbox.pack_start(self.buttonQuit, gtk.TRUE, gtk.TRUE, 5)
+		
+		self.win.show_all()
+	def tog(self, widget, data=None):
+		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
+	def delete_event(self, widget, event, data=None):
+		return gtk.FALSE
+	def destroy(self, widget, data=None):
+		return #gtk.main_quit()
+#	def main(self):
+#		gtk.main()
+
+
+###########################
+
 
 
 class GUI_ftp(gtk.Window):
