@@ -17,17 +17,6 @@
 # You should have received a copy of the GNU General Public License along
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-#Esempi presi da ZetCode PyGTK tutorial http://zetcode.com/gui/pygtk
-#e da tutorial GTK+3
-#https://python-gtk-3-tutorial.readthedocs.org/en/latest/index.html
-#Ho integrato le due window prese qui:
-#https://python-gtk-3-tutorial.readthedocs.org/en/latest/dialogs.html#example
-#e qui:
-#https://python-gtk-3-tutorial.readthedocs.org/en/latest/menus.html#example
-#in questo file con già una GUI, dimostrando la possibilità dell'applicazione
-#di generare 2 window indipendenti da una da considerarsi principale
-
-
 #import module
 import gtk
 import os, sys, ftplib
@@ -63,10 +52,10 @@ class MainWin(gtk.Window):
         hack.set_size_request(80, 40)
         fixed.put(hack, 10, 90)
 
-        quit = gtk.Button("Quit")
-        quit.connect("clicked", self.on_clicked_quit)
-        quit.set_size_request(80, 40)
-        fixed.put(quit, 10, 130)
+#        quit = gtk.Button("Quit")
+#        quit.connect("clicked", self.on_clicked_quit)
+#        quit.set_size_request(80, 40)
+#        fixed.put(quit, 10, 130)
 
         self.add(fixed)
 
