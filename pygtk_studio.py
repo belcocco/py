@@ -28,8 +28,8 @@ class MainWin(gtk.Window):
         super(MainWin, self).__init__()
         
         self.set_title("Main")
-        self.set_size_request(100, 180)		#dimensione della finestra per 4 button (100,180)
-#        self.set_size_request(1000, 480)		#dimensione della finestra per 4 button (100,180)
+        self.set_size_request(100, 220)		#dimensione della finestra per 4 button (100,180)
+#        self.set_size_request(1000, 480)
 #        self.set_position(gtk.WIN_POS_CENTER)
 #        self.connect("destroy", self.on_destroy)
 
@@ -52,10 +52,15 @@ class MainWin(gtk.Window):
         hack.set_size_request(80, 40)
         fixed.put(hack, 10, 90)
 
-#        quit = gtk.Button("Quit")
-#        quit.connect("clicked", self.on_clicked_quit)
-#        quit.set_size_request(80, 40)
-#        fixed.put(quit, 10, 130)
+        lista = gtk.Button("List")
+        lista.connect("clicked", self.on_clicked_lista)
+        lista.set_size_request(80, 40)
+        fixed.put(lista, 10, 130)
+        
+        lista = gtk.Button("Editor")
+        lista.connect("clicked", self.on_clicked_editor)
+        lista.set_size_request(80, 40)
+        fixed.put(lista, 10, 170)
 
         self.add(fixed)
 
@@ -65,27 +70,33 @@ class MainWin(gtk.Window):
 #        gtk.main_quit()
         
     def on_clicked_git(self, widget):
-#INSERIRE la procedura di apertura della finestra GUI() al click del git-button
+		#INSERIRE la procedura di apertura della finestra GUI() al click del git-button
         app = GUI_git()						#si apre la finestra dell'applicazione
-        app.show_all()
+#        app.show_all()
 #       gtk.main_quit()
 
     def on_clicked_ftp(self, widget):
-#INSERIRE la procedura di apertura della finestra GUI() al click del ftp-button
+		#INSERIRE la procedura di apertura della finestra GUI() al click del ftp-button
         app = GUI_ftp()						#si apre la finestra dell'applicazione
         app.show_all()
 #       gtk.main_quit()
 
     def on_clicked_hack(self, widget):
-#INSERIRE la procedura di apertura della finestra GUI() al click del hack-button
-       import editor                            #Per adesso la procedura è un editor di testo
-#        app = GUI_hack()						#si apre la finestra dell'applicazione
+		#INSERIRE la procedura di apertura della finestra GUI() al click del hack-button
+        app = GUI_hack()						#si apre la finestra dell'applicazione
 #       gtk.main_quit()
+#Da questo punto importa applicazioni fatte da altri
+    def on_clicked_lista(self, widget):
+		#INSERIRE la procedura di apertura della finestra GUI() al click del git-button
+		import lista
+#		app = ListaWin()
+#		gtk.main_quit()
 
-    def on_clicked_quit(self, widget):
-#INSERIRE la procedura di apertura della finestra GUI() al click del git-button
-       gtk.main_quit()
+    def on_clicked_editor(self, widget):
+		#INSERIRE la procedura di apertura della finestra GUI() al click del git-button
+		import editor
 
+#		gtk.main_quit()
 
 
 #######################################
@@ -118,24 +129,143 @@ class Presentazione(gtk.Window):
         # add the scrolledwindow to the window
         self.add(scrolled_window)
 
-#        self.show()
-
-#    def on_destroy(self, widget):
-#        gtk.main_quit()
+    def on_destroy(self, widget):
+        gtk.main_quit()
 		
-#Window per applicazione startata.
-#Il 'title' e le proprietà sono nel file UI_FILE_...--->src/pygtk_studio.ui
+#Window per GitHub.com (Upload e Download Repository)
 class GUI_git:
 	def __init__(self):
 		self.win = gtk.Window(gtk.WINDOW_TOPLEVEL)
+		self.win.set_title("Git")
+		self.win.set_default_size(400,95)
+		self.win.set_position(gtk.WIN_POS_CENTER)
+		self.win.set_resizable(gtk.TRUE)
+		self.win.set_border_width(10)
+
 		self.win.connect("delete_event", self.delete_event)
 		self.win.connect("destroy", self.destroy)
+
+		self.vbox = gtk.VBox()
+
+#		self.vbox = gtk.VBox(gtk.TRUE, 3)
+#		self.win.add(self.vbox)
+#		self.vbox.show()
+
+		self.entry = gtk.Entry(100)
+		self.entry.set_text("git clone http://github.com/belcocco/py.git")
+		self.vbox.pack_start(self.entry, gtk.TRUE, gtk.TRUE, 0)
+		self.button = gtk.Button(None, gtk.STOCK_EXECUTE)
+		self.button.connect("clicked", self.changeText)
+		self.vbox.pack_start(self.button, gtk.TRUE, gtk.TRUE, 0)
+		self.win.add(self.vbox)
+		self.win.show_all()
+
+
+#		self.button_r1 = gtk.RadioButton(None, "primo", gtk.FALSE)
+#		self.button_r1.connect("toggled", self.tog, "primo")
+#		self.button_r2 = gtk.RadioButton(self.button_r1, "secondo")
+#		self.button_r2.connect("toggled", self.tog, "secondo")
+#		self.button_r3 = gtk.RadioButton(self.button_r1, "terzo")
+#		self.button_r3.connect("toggled", self.tog, "terzo")
+
+#		self.button_t1 = gtk.ToggleButton("primo toggle")
+#		self.button_t1.connect("toggled", self.tog, "primo toggle")
+#		self.button_t2 = gtk.ToggleButton("secondo toggle")
+#		self.button_t2.connect("toggled", self.tog, "secondo toggle")
+#		self.button_dl = gtk.Button("Download")
+#		self.button_dl.connect("clicked", self.tog, "Download")
+#		self.button_ul = gtk.Button("Upload")
+#		self.button_ul.connect("clicked", self.tog, "Upload")
+
+#		self.buttonQuit = gtk.Button(None, gtk.STOCK_QUIT)
+#		self.buttonQuit.connect("clicked", self.destroy)
+
+#		self.vbox.pack_start(self.button_r1, gtk.TRUE, gtk.TRUE, 5)
+#		self.vbox.pack_start(self.button_r2, gtk.TRUE, gtk.TRUE, 5)
+#		self.vbox.pack_start(self.button_r3, gtk.TRUE, gtk.TRUE, 5)
+#		self.vbox.pack_start(self.button_t1, gtk.TRUE, gtk.TRUE, 5)
+#		self.vbox.pack_start(self.button_t2, gtk.TRUE, gtk.TRUE, 5)
+#		self.vbox.pack_start(self.button_dl, gtk.TRUE, gtk.TRUE, 5)
+#		self.vbox.pack_start(self.button_ul, gtk.TRUE, gtk.TRUE, 5)
+#		self.vbox.pack_start(self.buttonQuit, gtk.TRUE, gtk.TRUE, 5)
+		
+#		self.win.show_all()
+	def changeText(self, widget):
+		self.entry.set_text("Nuovo testo!")
+	def tog(self, widget, data=None):
+		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
+	def delete_event(self, widget, event, data=None):
+		return gtk.FALSE
+	def destroy(self, widget, data=None):
+		return gtk.main_quit()
+#	def main(self):
+#		gtk.main()
+
+class GUI_ftp():
+	def __init__(self):
+		self.win = gtk.Window(gtk.WINDOW_TOPLEVEL)
+		self.win.set_title("FTP")
+		self.win.set_default_size(400,95)
 		self.win.set_position(gtk.WIN_POS_CENTER)
-		self.win.set_resizable(gtk.FALSE)
+		self.win.set_resizable(gtk.TRUE)
 		self.win.set_border_width(10)
+
+		self.win.connect("delete_event", self.delete_event)
+		self.win.connect("destroy", self.destroy)
+
+######### FTP Client ############################
+#		if __name__ == '__main__':
+#		nick = raw_input('Nick:')
+#		pwd = raw_input('Password:')
+#		site = raw_input('Sito:')
+#		obj = ClientFTP(site,nick,pwd)
+#		while obj.online: #while True
+#			command = raw_input('pyFTP >>> ')
+#			obj.controlla_cmd(command)      
+#################################################
+
+        
+#        self.connect("destroy", gtk.main_quit)
+#        self.win.set_default_size(800,95)
+#        self.set_size_request(250, 150)
+#        self.win.set_position(gtk.WIN_POS_CENTER)
+#        fixed = gtk.Fixed()
+
+#        git = gtk.Button("Download")
+#        fixed.put(git, 10, 10)
+
+#        blog = gtk.Button("Upload")
+#        fixed.put(blog, 10, 50)
+
+#        self.win.add(fixed)
+ 
+class GUI_hack:
+	def __init__(self):
+		self.win = gtk.Window(gtk.WINDOW_TOPLEVEL)
+		self.win.set_title("Hack")
+		self.win.set_default_size(400,95)
+		self.win.set_position(gtk.WIN_POS_CENTER)
+		self.win.set_resizable(gtk.TRUE)
+		self.win.set_border_width(10)
+
+		self.win.connect("delete_event", self.delete_event)
+		self.win.connect("destroy", self.destroy)
+
+#		self.vbox = gtk.VBox()
+
 		self.vbox = gtk.VBox(gtk.TRUE, 3)
 		self.win.add(self.vbox)
 		self.vbox.show()
+
+#		self.entry = gtk.Entry(100)
+#		self.entry.set_text("git clone http://github.com/belcocco/py.git")
+#		self.vbox.pack_start(self.entry, gtk.TRUE, gtk.TRUE, 0)
+#		self.button = gtk.Button(None, gtk.STOCK_EXECUTE)
+#		self.button.connect("clicked", self.changeText)
+#		self.vbox.pack_start(self.button, gtk.TRUE, gtk.TRUE, 0)
+#		self.win.add(self.vbox)
+#		self.win.show_all()
+
 
 		self.button_r1 = gtk.RadioButton(None, "primo", gtk.FALSE)
 		self.button_r1.connect("toggled", self.tog, "primo")
@@ -166,49 +296,16 @@ class GUI_git:
 		self.vbox.pack_start(self.buttonQuit, gtk.TRUE, gtk.TRUE, 5)
 		
 		self.win.show_all()
+	def changeText(self, widget):
+		self.entry.set_text("Nuovo testo!")
 	def tog(self, widget, data=None):
 		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
 	def delete_event(self, widget, event, data=None):
 		return gtk.FALSE
 	def destroy(self, widget, data=None):
-		return #gtk.main_quit()
+		return gtk.main_quit()
 #	def main(self):
 #		gtk.main()
-
-
-###########################
-
-
-
-class GUI_ftp(gtk.Window):
-    def __init__(self):
-        super(GUI_ftp, self).__init__()
-        
-#        self.connect("destroy", gtk.main_quit)
-        self.set_default_size(800,95)
-#        self.set_size_request(250, 150)
-        self.set_position(gtk.WIN_POS_CENTER)
-        fixed = gtk.Fixed()
-
-        git = gtk.Button("Download")
-        fixed.put(git, 10, 10)
-
-        blog = gtk.Button("Upload")
-        fixed.put(blog, 10, 50)
-
-        self.add(fixed)
- 
-#        box = gtk.Box(spacing=6)
-#        self.add(box)
-
-class GUI_hack:
-    def __init__(self):
-
-        self.builder = gtk.Builder()
-        self.builder.add_from_file(UI_FILE_HACK)
-        self.builder.connect_signals(self)
-
-        GUI = self.builder.get_object('GUI')
 
 class ClientFTP(object):
         """Client FTP da linea di comando
@@ -500,23 +597,15 @@ pres.show_all()
 start = MainWin()
 start.show_all()
 
-#####################################
+######### FTP Client ############################
 #if __name__ == '__main__':
 #        nick = raw_input('Nick:')
 #        pwd = raw_input('Password:')
 #        site = raw_input('Sito:')
-#        obj = Client(site,nick,pwd)
+#        obj = ClientFTP(site,nick,pwd)
 #        while obj.online: #while True
 #                command = raw_input('pyFTP >>> ')
 #                obj.controlla_cmd(command)      
-#####################################
-nick = raw_input('Nick:')
-psw = raw_input('Password:')
-site = raw_input('Sito:')
-print (nick, psw, site)
-obj = ClientFTP(site,nick,psw)
-while obj.online:                     #while True
-    command = raw_input('pyFTP >>> ')
-    obj.controlla_cmd(command)      
+#################################################
 
 gtk.main()
