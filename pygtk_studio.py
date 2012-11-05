@@ -28,7 +28,7 @@ class MainWin(gtk.Window):
         super(MainWin, self).__init__()
         
         self.set_title("Main")
-        self.set_size_request(100, 220)		#dimensione della finestra per 4 button (100,180)
+        self.set_size_request(100, 260)		#dimensione della finestra per 4 button (100,180)
 #        self.set_size_request(1000, 480)
 #        self.set_position(gtk.WIN_POS_CENTER)
 #        self.connect("destroy", self.on_destroy)
@@ -62,6 +62,11 @@ class MainWin(gtk.Window):
         lista.set_size_request(80, 40)
         fixed.put(lista, 10, 170)
 
+        comando = gtk.Button("Comando")
+        comando.connect("clicked", self.on_clicked_comando)
+        comando.set_size_request(80, 40)
+        fixed.put(comando, 10, 210)
+
         self.add(fixed)
 
 #        self.show_all()
@@ -72,7 +77,7 @@ class MainWin(gtk.Window):
     def on_clicked_git(self, widget):
 		#INSERIRE la procedura di apertura della finestra GUI() al click del git-button
         app = GUI_git()						#si apre la finestra dell'applicazione
-#        app.show_all()
+#       app.show_all()
 #       gtk.main_quit()
 
     def on_clicked_ftp(self, widget):
@@ -95,6 +100,12 @@ class MainWin(gtk.Window):
     def on_clicked_editor(self, widget):
 		#INSERIRE la procedura di apertura della finestra GUI() al click del git-button
 		import editor
+
+#		gtk.main_quit()
+
+    def on_clicked_comando(self, widget):
+		#INSERIRE la procedura di apertura della finestra GUI() al click del git-button
+		import eseguicmd
 
 #		gtk.main_quit()
 
@@ -133,11 +144,11 @@ class Presentazione(gtk.Window):
         gtk.main_quit()
 		
 #Window per GitHub.com (Upload e Download Repository)
-class GUI_git:
+class GUI_git():
 	def __init__(self):
 		self.win = gtk.Window(gtk.WINDOW_TOPLEVEL)
 		self.win.set_title("Git")
-		self.win.set_default_size(400,95)
+		self.win.set_default_size(200,80)
 		self.win.set_position(gtk.WIN_POS_CENTER)
 		self.win.set_resizable(gtk.TRUE)
 		self.win.set_border_width(10)
@@ -145,59 +156,45 @@ class GUI_git:
 		self.win.connect("delete_event", self.delete_event)
 		self.win.connect("destroy", self.destroy)
 
-		self.vbox = gtk.VBox()
+#		self.vbox = gtk.VBox()
 
-#		self.vbox = gtk.VBox(gtk.TRUE, 3)
-#		self.win.add(self.vbox)
-#		self.vbox.show()
-
-		self.entry = gtk.Entry(100)
-		self.entry.set_text("git clone http://github.com/belcocco/py.git")
-		self.vbox.pack_start(self.entry, gtk.TRUE, gtk.TRUE, 0)
-		self.button = gtk.Button(None, gtk.STOCK_EXECUTE)
-		self.button.connect("clicked", self.changeText)
-		self.vbox.pack_start(self.button, gtk.TRUE, gtk.TRUE, 0)
+		self.vbox = gtk.VBox(gtk.TRUE, 3)
 		self.win.add(self.vbox)
+		self.vbox.show()
+
+#2 ToggleButton per le attività CLONE e PUSH
+		self.tog_button_clone = gtk.ToggleButton("CLONE")
+		self.tog_button_clone.connect("clicked", self.tog_clone, "Download")
+		self.tog_button_push = gtk.ToggleButton("PUSH")
+		self.tog_button_push.connect("clicked", self.tog_push, "Upload")
+
+		self.vbox.pack_start(self.tog_button_clone, gtk.TRUE, gtk.TRUE, 5)
+		self.vbox.pack_start(self.tog_button_push, gtk.TRUE, gtk.TRUE, 5)
+
+#Spazio per inserire il comando (git clone .... oppure git push.....
+		self.entry = gtk.Entry(100)
+#		self.entry.set_text("git clone http://github.com/belcocco/py.git")
+		self.vbox.pack_start(self.entry, gtk.TRUE, gtk.TRUE, 0)
+
+#Bottone Esegui
+		self.button_exec = gtk.Button(None, gtk.STOCK_EXECUTE)
+		self.button_exec.connect("clicked", self.changeText)
+		self.vbox.pack_start(self.button_exec, gtk.TRUE, gtk.TRUE, 0)
+
 		self.win.show_all()
 
-
-#		self.button_r1 = gtk.RadioButton(None, "primo", gtk.FALSE)
-#		self.button_r1.connect("toggled", self.tog, "primo")
-#		self.button_r2 = gtk.RadioButton(self.button_r1, "secondo")
-#		self.button_r2.connect("toggled", self.tog, "secondo")
-#		self.button_r3 = gtk.RadioButton(self.button_r1, "terzo")
-#		self.button_r3.connect("toggled", self.tog, "terzo")
-
-#		self.button_t1 = gtk.ToggleButton("primo toggle")
-#		self.button_t1.connect("toggled", self.tog, "primo toggle")
-#		self.button_t2 = gtk.ToggleButton("secondo toggle")
-#		self.button_t2.connect("toggled", self.tog, "secondo toggle")
-#		self.button_dl = gtk.Button("Download")
-#		self.button_dl.connect("clicked", self.tog, "Download")
-#		self.button_ul = gtk.Button("Upload")
-#		self.button_ul.connect("clicked", self.tog, "Upload")
-
-#		self.buttonQuit = gtk.Button(None, gtk.STOCK_QUIT)
-#		self.buttonQuit.connect("clicked", self.destroy)
-
-#		self.vbox.pack_start(self.button_r1, gtk.TRUE, gtk.TRUE, 5)
-#		self.vbox.pack_start(self.button_r2, gtk.TRUE, gtk.TRUE, 5)
-#		self.vbox.pack_start(self.button_r3, gtk.TRUE, gtk.TRUE, 5)
-#		self.vbox.pack_start(self.button_t1, gtk.TRUE, gtk.TRUE, 5)
-#		self.vbox.pack_start(self.button_t2, gtk.TRUE, gtk.TRUE, 5)
-#		self.vbox.pack_start(self.button_dl, gtk.TRUE, gtk.TRUE, 5)
-#		self.vbox.pack_start(self.button_ul, gtk.TRUE, gtk.TRUE, 5)
-#		self.vbox.pack_start(self.buttonQuit, gtk.TRUE, gtk.TRUE, 5)
-		
-#		self.win.show_all()
 	def changeText(self, widget):
 		self.entry.set_text("Nuovo testo!")
-	def tog(self, widget, data=None):
+	def tog_clone(self, widget, data=None):
+		self.entry.set_text("git clone http://github.com/belcocco/py.git")
+		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
+	def tog_push(self, widget, data=None):
+		self.entry.set_text("git push http://github.com/belcocco/py.git")
 		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
 	def delete_event(self, widget, event, data=None):
 		return gtk.FALSE
 	def destroy(self, widget, data=None):
-		return gtk.main_quit()
+		return #gtk.main_quit()
 #	def main(self):
 #		gtk.main()
 
@@ -230,14 +227,13 @@ class GUI_ftp():
 #        self.set_size_request(250, 150)
 #        self.win.set_position(gtk.WIN_POS_CENTER)
 #        fixed = gtk.Fixed()
-
 #        git = gtk.Button("Download")
 #        fixed.put(git, 10, 10)
 
 #        blog = gtk.Button("Upload")
 #        fixed.put(blog, 10, 50)
 
-#        self.win.add(fixed)
+#        self.add(fixed)
  
 class GUI_hack:
 	def __init__(self):
@@ -296,6 +292,75 @@ class GUI_hack:
 		self.vbox.pack_start(self.buttonQuit, gtk.TRUE, gtk.TRUE, 5)
 		
 		self.win.show_all()
+	def changeText(self, widget):
+		self.entry.set_text("Nuovo testo!")
+	def tog(self, widget, data=None):
+		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
+	def delete_event(self, widget, event, data=None):
+		return gtk.FALSE
+	def destroy(self, widget, data=None):
+		return #gtk.main_quit()
+#	def main(self):
+#		gtk.main()
+
+#Window per clonare in locale un repo su GitHub.com (Download Repository)
+class GIT_clone_push:
+	def __init__(self):
+		self.win = gtk.Window(gtk.WINDOW_TOPLEVEL)
+		self.win.set_title("Git")
+		self.win.set_default_size(400,95)
+		self.win.set_position(gtk.WIN_POS_CENTER)
+		self.win.set_resizable(gtk.TRUE)
+		self.win.set_border_width(10)
+
+		self.win.connect("delete_event", self.delete_event)
+		self.win.connect("destroy", self.destroy)
+
+		self.vbox = gtk.VBox()
+
+#		self.vbox = gtk.VBox(gtk.TRUE, 3)
+#		self.win.add(self.vbox)
+#		self.vbox.show()
+
+		self.entry = gtk.Entry(100)
+		self.entry.set_text("git clone http://github.com/belcocco/py.git")
+		self.vbox.pack_start(self.entry, gtk.TRUE, gtk.TRUE, 0)
+		self.button = gtk.Button(None, gtk.STOCK_EXECUTE)
+		self.button.connect("clicked", self.changeText)
+		self.vbox.pack_start(self.button, gtk.TRUE, gtk.TRUE, 0)
+		self.win.add(self.vbox)
+		self.win.show_all()
+
+
+#		self.button_r1 = gtk.RadioButton(None, "primo", gtk.FALSE)
+#		self.button_r1.connect("toggled", self.tog, "primo")
+#		self.button_r2 = gtk.RadioButton(self.button_r1, "secondo")
+#		self.button_r2.connect("toggled", self.tog, "secondo")
+#		self.button_r3 = gtk.RadioButton(self.button_r1, "terzo")
+#		self.button_r3.connect("toggled", self.tog, "terzo")
+
+#		self.button_t1 = gtk.ToggleButton("primo toggle")
+#		self.button_t1.connect("toggled", self.tog, "primo toggle")
+#		self.button_t2 = gtk.ToggleButton("secondo toggle")
+#		self.button_t2.connect("toggled", self.tog, "secondo toggle")
+#		self.button_dl = gtk.Button("Download")
+#		self.button_dl.connect("clicked", self.tog, "Download")
+#		self.button_ul = gtk.Button("Upload")
+#		self.button_ul.connect("clicked", self.tog, "Upload")
+
+#		self.buttonQuit = gtk.Button(None, gtk.STOCK_QUIT)
+#		self.buttonQuit.connect("clicked", self.destroy)
+
+#		self.vbox.pack_start(self.button_r1, gtk.TRUE, gtk.TRUE, 5)
+#		self.vbox.pack_start(self.button_r2, gtk.TRUE, gtk.TRUE, 5)
+#		self.vbox.pack_start(self.button_r3, gtk.TRUE, gtk.TRUE, 5)
+#		self.vbox.pack_start(self.button_t1, gtk.TRUE, gtk.TRUE, 5)
+#		self.vbox.pack_start(self.button_t2, gtk.TRUE, gtk.TRUE, 5)
+#		self.vbox.pack_start(self.button_dl, gtk.TRUE, gtk.TRUE, 5)
+#		self.vbox.pack_start(self.button_ul, gtk.TRUE, gtk.TRUE, 5)
+#		self.vbox.pack_start(self.buttonQuit, gtk.TRUE, gtk.TRUE, 5)
+		
+#		self.win.show_all()
 	def changeText(self, widget):
 		self.entry.set_text("Nuovo testo!")
 	def tog(self, widget, data=None):
@@ -593,7 +658,7 @@ pres.show_all()
 #pres.hide()
 
 #Questa è la finestra principale con i bottoni per startare le attività.
-#Si chiude con il 'QUIT' button 
+#Si chiude con la 'X' in alto a destra 
 start = MainWin()
 start.show_all()
 

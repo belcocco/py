@@ -1,3 +1,4 @@
+
 [file_prefs]
 final_new_line=true
 ensure_convert_new_lines=false
@@ -24,7 +25,7 @@ long_line_column=72
 
 [files]
 current_page=0
-FILE_NAME_0=4464;Python;0;16;1;1;0;%2Fhome%2Fraga%2Fpy%2Fpygtk_studio.py;0;4
+FILE_NAME_0=6460;Python;0;16;1;1;0;%2Fhome%2Fraga%2Fpy%2Fpygtk_studio.py;0;4
 
 [VTE]
 last_dir=/home/raga
