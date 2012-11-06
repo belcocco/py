@@ -157,6 +157,8 @@ class GUI_git():
 
 		self.win.connect("delete_event", self.delete_event)
 		self.win.connect("destroy", self.destroy)
+#		CMD_git ="git"
+#		CMD_webaddr ="https://github.com/belcocco/py.git"
 
 #		self.vbox = gtk.VBox()
 
@@ -173,31 +175,43 @@ class GUI_git():
 		self.vbox.pack_start(self.tog_button_clone, gtk.TRUE, gtk.TRUE, 5)
 		self.vbox.pack_start(self.tog_button_push, gtk.TRUE, gtk.TRUE, 5)
 
-#Spazio per inserire il comando (git clone .... oppure git push.....
+#Spazio per controllare l'inserimento del comando (git clone .... oppure git push.....
 		self.entry = gtk.Entry(100)
-#		self.entry.set_text("git clone http://github.com/belcocco/py.git")
+#		self.entry.set_text("git clone https://github.com/belcocco/py.git")
 		self.vbox.pack_start(self.entry, gtk.TRUE, gtk.TRUE, 0)
 
 #Bottone Esegui
 		self.button_exec = gtk.Button(None, gtk.STOCK_EXECUTE)
-		self.button_exec.connect("clicked", self.changeText)
+		self.button_exec.connect("clicked", self.exec_git_cmd)
 		self.vbox.pack_start(self.button_exec, gtk.TRUE, gtk.TRUE, 0)
 
 		self.win.show_all()
 
-	def changeText(self, widget):
-
+	def exec_git_cmd(self, widget):
+		CMD_git = self.entry.get_text()
 		self.entry.set_text("Attendere prego ...")
+		print CMD_git
+
 ##################
-		subprocess.call(["git", "push", "https://github.com/belcocco/py.git"])
-#		subprocess.call(["git push https://github.com/belcocco/py.git"])
+#		subprocess.call(["CMD_git"])
 ###################
+
+#Comando CLONE
 	def tog_clone(self, widget, data=None):
+#		CMD_git = "clone"
 		self.entry.set_text("git clone https://github.com/belcocco/py.git")
 		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
+#		print CMD_git
+#		subprocess.call(["git", "clone", "https://github.com/belcocco/py.git"])
+
+#Comando PUSH
 	def tog_push(self, widget, data=None):
+#		CMD_git = "push"
 		self.entry.set_text("git push https://github.com/belcocco/py.git")
 		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
+#		print CMD_git
+#		subprocess.call(["git", "push", "https://github.com/zanata/zanata.git"])
+		
 	def delete_event(self, widget, event, data=None):
 		return gtk.FALSE
 	def destroy(self, widget, data=None):
