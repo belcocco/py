@@ -19,9 +19,11 @@
 #
 #import module
 import gtk
-import os, sys, ftplib
+import os, subprocess, sys
+import ftplib
 import gobject
 import time
+import string
 
 class MainWin(gtk.Window):
     def __init__(self):
@@ -184,12 +186,17 @@ class GUI_git():
 		self.win.show_all()
 
 	def changeText(self, widget):
-		self.entry.set_text("Nuovo testo!")
+
+		self.entry.set_text("Attendere prego ...")
+##################
+		subprocess.call(["git", "push", "https://github.com/belcocco/py.git"])
+#		subprocess.call(["git push https://github.com/belcocco/py.git"])
+###################
 	def tog_clone(self, widget, data=None):
-		self.entry.set_text("git clone http://github.com/belcocco/py.git")
+		self.entry.set_text("git clone https://github.com/belcocco/py.git")
 		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
 	def tog_push(self, widget, data=None):
-		self.entry.set_text("git push http://github.com/belcocco/py.git")
+		self.entry.set_text("git push https://github.com/belcocco/py.git")
 		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
 	def delete_event(self, widget, event, data=None):
 		return gtk.FALSE
@@ -323,7 +330,7 @@ class GIT_clone_push:
 #		self.vbox.show()
 
 		self.entry = gtk.Entry(100)
-		self.entry.set_text("git clone http://github.com/belcocco/py.git")
+		self.entry.set_text("git clone https://github.com/belcocco/py.git")
 		self.vbox.pack_start(self.entry, gtk.TRUE, gtk.TRUE, 0)
 		self.button = gtk.Button(None, gtk.STOCK_EXECUTE)
 		self.button.connect("clicked", self.changeText)
@@ -653,7 +660,7 @@ pres = Presentazione()
 		# ovvero si chiude solo lei e non la finestra dei button o la GUI dell'applicazione
 		#se NON c'è: le finestre si chiudono tutte eseguendo un click in alto a destra.
 		#comunque tutto dipende dal LOOP PRINCIPALE [Gtk.mail()] se è unico o no
-pres.show_all()
+#pres.show_all()
 #time.sleep(4)
 #pres.hide()
 
