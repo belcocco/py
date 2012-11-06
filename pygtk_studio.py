@@ -189,12 +189,17 @@ class GUI_git():
 
 	def exec_git_cmd(self, widget):
 		CMD_git = self.entry.get_text()
-		self.entry.set_text("Attendere prego ...")
+#		self.entry.set_text("Attendere prego ...")
 		print CMD_git
 
-##################
-#		subprocess.call(["CMD_git"])
+################## PROVE VARIE
+#		subprocess.call(["git", "push", "https://github.com/zanata/zanata.git"])
+#		subprocess.call(["git", "push", "https://github.com/zanata/zanata.git"])
+#		subprocess.call("git clone https://github.com/belcocco/py.git", shell=True)
+#		subprocess.Popen("git "+CMD_git+"https://github.com/belcocco/py.git", shell=True)
 ###################
+		#QUELLO che FUNZIONA!!!!
+		subprocess.Popen(CMD_git, shell=True)
 
 #Comando CLONE
 	def tog_clone(self, widget, data=None):
@@ -202,7 +207,7 @@ class GUI_git():
 		self.entry.set_text("git clone https://github.com/belcocco/py.git")
 		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
 #		print CMD_git
-#		subprocess.call(["git", "clone", "https://github.com/belcocco/py.git"])
+#		subprocess.call(["git", "clone", "https://github.com/zanata/zanata.git"])
 
 #Comando PUSH
 	def tog_push(self, widget, data=None):
