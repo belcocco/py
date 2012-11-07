@@ -2,7 +2,7 @@
 # -*- coding: latin-1 -*-
 
 # pygtk_studio.py
-# Copyright (C) 2012 raga <raga.muffin@virgilio.it>
+# Copyright (C) 2012 belcocco <belcocco@gmail.com>
 # 
 # pygtk-studio is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -19,11 +19,14 @@
 #
 #import module
 import gtk
+import gtk.glade
 import os, subprocess, sys
 import ftplib
 import gobject
 import time
 import string
+#Importa moduli dell'utente
+import outwin	#Finestra d'appoggio per gli input/output
 
 class MainWin(gtk.Window):
     def __init__(self):
@@ -32,8 +35,8 @@ class MainWin(gtk.Window):
         self.set_title("Main")
         self.set_size_request(100, 260)		#dimensione della finestra per 4 button (100,180)
 #        self.set_size_request(1000, 480)
-#        self.set_position(gtk.WIN_POS_CENTER)
-#        self.connect("destroy", self.on_destroy)
+        self.set_position(gtk.WIN_POS_MOUSE)
+        self.connect("destroy", self.on_destroy)
 
 #######################################
 
@@ -73,8 +76,8 @@ class MainWin(gtk.Window):
 
 #        self.show_all()
         
-#    def on_destroy(self, widget):
-#        gtk.main_quit()
+    def on_destroy(self, widget):
+        gtk.main_quit()
         
     def on_clicked_git(self, widget):
 		#INSERIRE la procedura di apertura della finestra GUI() al click del git-button
@@ -197,10 +200,12 @@ class GUI_git():
 #		subprocess.call(["git", "push", "https://github.com/zanata/zanata.git"])
 #		subprocess.call("git clone https://github.com/belcocco/py.git", shell=True)
 #		subprocess.Popen("git "+CMD_git+"https://github.com/belcocco/py.git", shell=True)
+#		subprocess.Popen(CMD_git, shell=True)
 ###################
-		#QUELLO che FUNZIONA!!!!
-		subprocess.Popen(CMD_git, shell=True)
-
+		#QUELLO che FUNZIONA MEGLIO. 
+		#Leggere qui: http://sharats.me/the-ever-useful-and-neat-subprocess-module.html
+		output = subprocess.check_output(CMD_git, shell=True)
+		
 #Comando CLONE
 	def tog_clone(self, widget, data=None):
 #		CMD_git = "clone"
@@ -263,6 +268,7 @@ class GUI_ftp():
  
 class GUI_hack:
 	def __init__(self):
+		print "------------"
 		self.win = gtk.Window(gtk.WINDOW_TOPLEVEL)
 		self.win.set_title("Hack")
 		self.win.set_default_size(400,95)
@@ -329,74 +335,6 @@ class GUI_hack:
 #	def main(self):
 #		gtk.main()
 
-#Window per clonare in locale un repo su GitHub.com (Download Repository)
-class GIT_clone_push:
-	def __init__(self):
-		self.win = gtk.Window(gtk.WINDOW_TOPLEVEL)
-		self.win.set_title("Git")
-		self.win.set_default_size(400,95)
-		self.win.set_position(gtk.WIN_POS_CENTER)
-		self.win.set_resizable(gtk.TRUE)
-		self.win.set_border_width(10)
-
-		self.win.connect("delete_event", self.delete_event)
-		self.win.connect("destroy", self.destroy)
-
-		self.vbox = gtk.VBox()
-
-#		self.vbox = gtk.VBox(gtk.TRUE, 3)
-#		self.win.add(self.vbox)
-#		self.vbox.show()
-
-		self.entry = gtk.Entry(100)
-		self.entry.set_text("git clone https://github.com/belcocco/py.git")
-		self.vbox.pack_start(self.entry, gtk.TRUE, gtk.TRUE, 0)
-		self.button = gtk.Button(None, gtk.STOCK_EXECUTE)
-		self.button.connect("clicked", self.changeText)
-		self.vbox.pack_start(self.button, gtk.TRUE, gtk.TRUE, 0)
-		self.win.add(self.vbox)
-		self.win.show_all()
-
-
-#		self.button_r1 = gtk.RadioButton(None, "primo", gtk.FALSE)
-#		self.button_r1.connect("toggled", self.tog, "primo")
-#		self.button_r2 = gtk.RadioButton(self.button_r1, "secondo")
-#		self.button_r2.connect("toggled", self.tog, "secondo")
-#		self.button_r3 = gtk.RadioButton(self.button_r1, "terzo")
-#		self.button_r3.connect("toggled", self.tog, "terzo")
-
-#		self.button_t1 = gtk.ToggleButton("primo toggle")
-#		self.button_t1.connect("toggled", self.tog, "primo toggle")
-#		self.button_t2 = gtk.ToggleButton("secondo toggle")
-#		self.button_t2.connect("toggled", self.tog, "secondo toggle")
-#		self.button_dl = gtk.Button("Download")
-#		self.button_dl.connect("clicked", self.tog, "Download")
-#		self.button_ul = gtk.Button("Upload")
-#		self.button_ul.connect("clicked", self.tog, "Upload")
-
-#		self.buttonQuit = gtk.Button(None, gtk.STOCK_QUIT)
-#		self.buttonQuit.connect("clicked", self.destroy)
-
-#		self.vbox.pack_start(self.button_r1, gtk.TRUE, gtk.TRUE, 5)
-#		self.vbox.pack_start(self.button_r2, gtk.TRUE, gtk.TRUE, 5)
-#		self.vbox.pack_start(self.button_r3, gtk.TRUE, gtk.TRUE, 5)
-#		self.vbox.pack_start(self.button_t1, gtk.TRUE, gtk.TRUE, 5)
-#		self.vbox.pack_start(self.button_t2, gtk.TRUE, gtk.TRUE, 5)
-#		self.vbox.pack_start(self.button_dl, gtk.TRUE, gtk.TRUE, 5)
-#		self.vbox.pack_start(self.button_ul, gtk.TRUE, gtk.TRUE, 5)
-#		self.vbox.pack_start(self.buttonQuit, gtk.TRUE, gtk.TRUE, 5)
-		
-#		self.win.show_all()
-	def changeText(self, widget):
-		self.entry.set_text("Nuovo testo!")
-	def tog(self, widget, data=None):
-		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
-	def delete_event(self, widget, event, data=None):
-		return gtk.FALSE
-	def destroy(self, widget, data=None):
-		return gtk.main_quit()
-#	def main(self):
-#		gtk.main()
 
 class ClientFTP(object):
         """Client FTP da linea di comando
@@ -685,8 +623,15 @@ pres = Presentazione()
 
 #Questa è la finestra principale con i bottoni per startare le attività.
 #Si chiude con la 'X' in alto a destra 
-start = MainWin()
-start.show_all()
+startMainWin = MainWin()
+startMainWin.show_all()
+
+#Questa è la finestra con gli output di tutte le attività
+#Volendo si può salvare quanto riportato in un file
+#Si chiude con la 'X' in alto a destra 
+MainGlade = gtk.glade.XML("outwin.glade")			#file glade
+outwin1 = MainGlade.get_widget("outwin1")			#outwin1 e widget contenuti in essa
+outwin1.show()
 
 ######### FTP Client ############################
 #if __name__ == '__main__':
