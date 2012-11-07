@@ -268,7 +268,7 @@ class GUI_ftp():
  
 class GUI_hack:
 	def __init__(self):
-		print "------------"
+		print "----- GUI_hack -------"
 		self.win = gtk.Window(gtk.WINDOW_TOPLEVEL)
 		self.win.set_title("Hack")
 		self.win.set_default_size(400,95)
