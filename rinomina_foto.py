@@ -1,15 +1,106 @@
-#!/usr/bin/env python
-
 #Rinomina le foto che arrivano dalla fotocamera
 
-import os
-import shutil
-import tempfile
-import pygtk
-pygtk.require('2.0')
-import gtk, gobject
+class PhotoRename():
+    def __init__(self):
+        print "----- Foto -------"
+        self.chmod = True
+        self.mov = True
+        self.destinazione = os.path.expanduser("~")
+        self.origine = self.destinazione
+        self.photo_list = []
+        self.movie_list = []
+        self.fotowin = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        self.fotowin.set_title("Copia le tue foto")
+        self.fotowin.set_position(gtk.WIN_POS_CENTER)
+        self.fotowin.connect("delete_event", self.delete_event)
+        self.fotowin.connect("destroy", self.destroy)
+        self.fotowin.set_border_width(2)
+        
+        self.tooltips = gtk.Tooltips()
+        
+        vbox = gtk.VBox(False, 2)
+        self.fotowin.add(vbox)
+        
+        tabella = gtk.Table(3,2, False)
+        vbox.pack_start(tabella, True, True, 2)
 
-class PhotoRename:
+        label_file = gtk.Label("File di origine")
+        tabella.attach(label_file, 0, 1, 0, 1, gtk.EXPAND|gtk.FILL, gtk.EXPAND|gtk.FILL, 2, 2)
+        label_file.show()
+        
+        self.button_file = gtk.Button(self.origine)
+        self.button_file.connect("clicked", self.select_files, None)
+        self.tooltips.set_tip(self.button_file, "Clicca per selezionare le foto da rinominare")
+        tabella.attach(self.button_file, 1, 2, 0, 1, gtk.EXPAND|gtk.FILL, gtk.EXPAND|gtk.FILL, 2, 2)
+        self.button_file.show()
+
+        label_file2 = gtk.Label("File di destinazione")
+        tabella.attach(label_file2, 0, 1, 1, 2, gtk.EXPAND|gtk.FILL, gtk.EXPAND|gtk.FILL, 2, 2)
+        label_file2.show()
+        
+        self.button_file2 = gtk.Button(self.destinazione)
+        self.button_file2.connect("clicked", self.select_dir, None)
+        self.tooltips.set_tip(self.button_file2, "Clicca per cambiare la directory di destinazione")
+        tabella.attach(self.button_file2, 1, 2, 1, 2, gtk.EXPAND|gtk.FILL, gtk.EXPAND|gtk.FILL, 2, 2)
+        self.button_file2.show()
+        
+        label = gtk.Label("Nome foto")
+        tabella.attach(label, 0, 1, 2, 3, gtk.EXPAND|gtk.FILL, gtk.EXPAND|gtk.FILL, 2, 2)
+        label.show()
+        
+        self.entry = gtk.Entry()
+        self.entry.set_text("Foto")
+        self.entry.select_region(0, len(self.entry.get_text()))
+        tabella.attach(self.entry, 1, 2, 2, 3, gtk.EXPAND|gtk.FILL, gtk.EXPAND|gtk.FILL, 2, 2)
+        self.entry.show()
+        self.tooltips.set_tip(self.entry, "Testo utilizzato per rinominare le foto")
+        
+        tabella.show()
+
+        check_mod = gtk.CheckButton("Sistema i permessi")
+        check_mod.set_active(True)
+        check_mod.connect("toggled", self.callback_mod)
+
+        check_mov = gtk.CheckButton("Copia i video")
+        check_mov.set_active(True)
+        check_mov.connect("toggled", self.callback_mov)
+        
+        check_box = gtk.HBox(False, 2)
+        check_box.pack_start(check_mod, True, True, 2)
+        check_box.pack_start(check_mov, True, True, 2)
+        check_mod.show()
+        check_mov.show()
+        vbox.pack_start(check_box, True, True, 2)
+        check_box.show()
+
+        button_box = gtk.HBox(False, 2)
+        
+        self.button = gtk.Button(None, gtk.STOCK_APPLY)
+        self.button.connect("released", self.rename_photos, None)
+        button_box.pack_start(self.button, True, True, 2)
+        self.button.show()
+        
+        button_quit = gtk.Button(None, gtk.STOCK_CLOSE)
+        button_quit.connect_object("clicked", gtk.Widget.destroy, self.window)
+        button_box.pack_start(button_quit, True, True, 2)
+        button_quit.show()
+        
+        vbox.pack_start(button_box, True, True, 2)
+        button_box.show()
+        
+        separator = gtk.HSeparator()
+        vbox.pack_start(separator, False, False, 2)
+        separator.show()
+
+        self.barra = gtk.ProgressBar()
+        vbox.pack_start(self.barra, True, True, 2)
+        self.barra.show()
+        
+        vbox.show()
+        self.update_labels(self)
+        self.entry.grab_focus()
+        self.fotowin.show_all()
+
     def update_labels(self, widget, data=None):
         self.button_file2.set_label(self.destinazione)
         numero = len(self.photo_list)
@@ -133,109 +224,11 @@ class PhotoRename:
         print "Esco dal programma"
         gtk.main_quit()
 
-    def __init__(self):
-        self.chmod = True
-        self.mov = True
-        self.destinazione = os.path.expanduser("~")
-        self.origine = self.destinazione
-        self.photo_list = []
-        self.movie_list = []
-        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        self.window.set_title("Copia le tue foto")
-        self.window.set_position(gtk.WIN_POS_CENTER)
-        self.window.connect("delete_event", self.delete_event)
-        self.window.connect("destroy", self.destroy)
-        self.window.set_border_width(2)
-        
-        self.tooltips = gtk.Tooltips()
-        
-        vbox = gtk.VBox(False, 2)
-        self.window.add(vbox)
-        
-        tabella = gtk.Table(3,2, False)
-        vbox.pack_start(tabella, True, True, 2)
 
-        label_file = gtk.Label("File di origine")
-        tabella.attach(label_file, 0, 1, 0, 1, gtk.EXPAND|gtk.FILL, gtk.EXPAND|gtk.FILL, 2, 2)
-        label_file.show()
-        
-        self.button_file = gtk.Button(self.origine)
-        self.button_file.connect("clicked", self.select_files, None)
-        self.tooltips.set_tip(self.button_file, "Clicca per selezionare le foto da rinominare")
-        tabella.attach(self.button_file, 1, 2, 0, 1, gtk.EXPAND|gtk.FILL, gtk.EXPAND|gtk.FILL, 2, 2)
-        self.button_file.show()
-
-        label_file2 = gtk.Label("File di destinazione")
-        tabella.attach(label_file2, 0, 1, 1, 2, gtk.EXPAND|gtk.FILL, gtk.EXPAND|gtk.FILL, 2, 2)
-        label_file2.show()
-        
-        self.button_file2 = gtk.Button(self.destinazione)
-        self.button_file2.connect("clicked", self.select_dir, None)
-        self.tooltips.set_tip(self.button_file2, "Clicca per cambiare la directory di destinazione")
-        tabella.attach(self.button_file2, 1, 2, 1, 2, gtk.EXPAND|gtk.FILL, gtk.EXPAND|gtk.FILL, 2, 2)
-        self.button_file2.show()
-        
-        label = gtk.Label("Nome foto")
-        tabella.attach(label, 0, 1, 2, 3, gtk.EXPAND|gtk.FILL, gtk.EXPAND|gtk.FILL, 2, 2)
-        label.show()
-        
-        self.entry = gtk.Entry()
-        self.entry.set_text("Foto")
-        self.entry.select_region(0, len(self.entry.get_text()))
-        tabella.attach(self.entry, 1, 2, 2, 3, gtk.EXPAND|gtk.FILL, gtk.EXPAND|gtk.FILL, 2, 2)
-        self.entry.show()
-        self.tooltips.set_tip(self.entry, "Testo utilizzato per rinominare le foto")
-        
-        tabella.show()
-
-        check_mod = gtk.CheckButton("Sistema i permessi")
-        check_mod.set_active(True)
-        check_mod.connect("toggled", self.callback_mod)
-
-        check_mov = gtk.CheckButton("Copia i video")
-        check_mov.set_active(True)
-        check_mov.connect("toggled", self.callback_mov)
-        
-        check_box = gtk.HBox(False, 2)
-        check_box.pack_start(check_mod, True, True, 2)
-        check_box.pack_start(check_mov, True, True, 2)
-        check_mod.show()
-        check_mov.show()
-        vbox.pack_start(check_box, True, True, 2)
-        check_box.show()
-
-        button_box = gtk.HBox(False, 2)
-        
-        self.button = gtk.Button(None, gtk.STOCK_APPLY)
-        self.button.connect("released", self.rename_photos, None)
-        button_box.pack_start(self.button, True, True, 2)
-        self.button.show()
-        
-        button_quit = gtk.Button(None, gtk.STOCK_CLOSE)
-        button_quit.connect_object("clicked", gtk.Widget.destroy, self.window)
-        button_box.pack_start(button_quit, True, True, 2)
-        button_quit.show()
-        
-        vbox.pack_start(button_box, True, True, 2)
-        button_box.show()
-        
-        separator = gtk.HSeparator()
-        vbox.pack_start(separator, False, False, 2)
-        separator.show()
-
-        self.barra = gtk.ProgressBar()
-        vbox.pack_start(self.barra, True, True, 2)
-        self.barra.show()
-        
-        vbox.show()
-        self.update_labels(self)
-        self.entry.grab_focus()
-        self.window.show()
-
-def main():
-    gtk.main()
-    return 0
+#def main():
+#    gtk.main()
+#    return 0
 
 if __name__ == "__main__":
     PhotoRename()
-    main()
+#    main()
