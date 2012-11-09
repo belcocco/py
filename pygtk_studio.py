@@ -28,6 +28,9 @@ import time
 import string
 import shutil
 import tempfile
+from subprocess import Popen, PIPE
+from threading import Thread
+from Queue import Queue, Empty
 
 #Importa moduli dell'utente
 import outwin	#Finestra d'appoggio per gli input/output
@@ -132,11 +135,14 @@ class Presentazione(gtk.Window):
     def __init__(self):
         super(Presentazione, self).__init__()
         
-        self.connect("destroy", self.on_destroy)    #gtk.main_quit)
+#        self.connect("destroy", self.on_destroy)    #gtk.main_quit)
         self.set_default_size(472,365)
         self.set_size_request(250, 150)
         self.set_position(gtk.WIN_POS_CENTER)
-        
+##############
+        self.connect("delete_event", self.delete_event)
+        self.connect("destroy", self.destroy)
+##############        
 #        opa = 10.0
 #        while opa != 0.0:
 #            if opa == 0.0:
@@ -164,26 +170,32 @@ class Presentazione(gtk.Window):
         # add the scrolledwindow to the window
         self.add(scrolled_window)
 
-    def on_destroy(self, widget):
-        return    #gtk.main_quit()
+#    def on_destroy(self, widget):
+#        return    #gtk.main_quit()
+##############
+    def delete_event(self, widget, event, data=None):
+        return gtk.FALSE
+    def destroy(self, widget, data=None):
+        return #gtk.main_quit()
+##############
 		
 #Window per GitHub.com (Upload e Download Repository)
 class GUI_git():
 	def __init__(self):
 		self.win = gtk.Window(gtk.WINDOW_TOPLEVEL)
 		self.win.set_title("Git")
-		self.win.set_default_size(200,80)
+#		self.win.set_default_size(200, 80)
+		self.win.set_size_request(500, 260)		#dimensione della finestra per 4 button (100,180)
 		self.win.set_position(gtk.WIN_POS_CENTER)
 		self.win.set_resizable(gtk.TRUE)
 		self.win.set_border_width(10)
 
 		self.win.connect("delete_event", self.delete_event)
 		self.win.connect("destroy", self.destroy)
-#		CMD_git ="git"
-#		CMD_webaddr ="https://github.com/belcocco/py.git"
 
 #		self.vbox = gtk.VBox()
 
+#		self.vbox = gtk.VBox(gtk.TRUE, 3)
 		self.vbox = gtk.VBox(gtk.TRUE, 3)
 		self.win.add(self.vbox)
 		self.vbox.show()
@@ -198,55 +210,73 @@ class GUI_git():
 		self.vbox.pack_start(self.tog_button_push, gtk.TRUE, gtk.TRUE, 5)
 
 #Spazio per controllare l'inserimento del comando (git clone .... oppure git push.....
-		self.entry = gtk.Entry(100)
-#		self.entry.set_text("git clone https://github.com/belcocco/py.git")
-		self.vbox.pack_start(self.entry, gtk.TRUE, gtk.TRUE, 0)
+		self.entry1 = gtk.Entry(100)
+#		self.entry1.set_text("git clone https://github.com/belcocco/py.git")
+		self.vbox.pack_start(self.entry1, gtk.TRUE, gtk.TRUE, 0)
 
 #Bottone Esegui
 		self.button_exec = gtk.Button(None, gtk.STOCK_EXECUTE)
 		self.button_exec.connect("clicked", self.exec_git_cmd)
 		self.vbox.pack_start(self.button_exec, gtk.TRUE, gtk.TRUE, 0)
 
+#Spazio per gestire l'attività scelta (git clone .... oppure git push.....
+		self.entry2 = gtk.Entry(100)
+#		self.entry2.set_text("git clone https://github.com/belcocco/py.git")
+		self.vbox.pack_start(self.entry2, gtk.TRUE, gtk.TRUE, 0)
+
+#Spazio per gestire gli output-errori dell'attività scelta (git clone .... oppure git push.....
+		self.entry3 = gtk.Entry(100)
+#		self.entry3.set_text("git clone https://github.com/belcocco/py.git")
+		self.vbox.pack_start(self.entry3, gtk.TRUE, gtk.TRUE, 0)
+
 		self.win.show_all()
 
+#Gestisce l'attività
 	def exec_git_cmd(self, widget):
-		CMD_git = self.entry.get_text()
-#		self.entry.set_text("Attendere prego ...")
+		CMD_git = self.entry1.get_text()
+		if self.entry3.get_text == "":
+			self.entry2.set_text("...terminato con successo !")
+			return
+		else:
+			self.entry2.set_text("...terminato con ERRORE !")
 		print CMD_git
 
-################## PROVE VARIE
+################## PROVE VARIE per usare il modulo subprocess
+#		Leggere qui: http://sharats.me/the-ever-useful-and-neat-subprocess-module.html
 #		subprocess.call(["git", "push", "https://github.com/zanata/zanata.git"])
 #		subprocess.call(["git", "push", "https://github.com/zanata/zanata.git"])
 #		subprocess.call("git clone https://github.com/belcocco/py.git", shell=True)
 #		subprocess.Popen("git "+CMD_git+"https://github.com/belcocco/py.git", shell=True)
-#		subprocess.Popen(CMD_git, shell=True)
-###################
 		#QUELLO che FUNZIONA MEGLIO. 
-		#Leggere qui: http://sharats.me/the-ever-useful-and-neat-subprocess-module.html
-		output = subprocess.check_output(CMD_git, shell=True)
-		
-#Comando CLONE
-	def tog_clone(self, widget, data=None):
-#		CMD_git = "clone"
-		self.entry.set_text("git clone https://github.com/belcocco/py.git")
-		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
-#		print CMD_git
-#		subprocess.call(["git", "clone", "https://github.com/zanata/zanata.git"])
+		proc = subprocess.Popen(CMD_git, shell=True, stderr=PIPE) #, stdout=PIPE)
 
-#Comando PUSH
-	def tog_push(self, widget, data=None):
-#		CMD_git = "push"
-		self.entry.set_text("git push https://github.com/belcocco/py.git")
+#		for line in proc.stdout:
+#			self.entry3.set_text(line)
+#			print "stdout ---->"
+#			print line
+		for line in proc.stderr:
+			self.entry3.set_text(line)
+			print "stderr ---->"
+			print line
+		
+#Comando GIT CLONE
+	def tog_clone(self, widget, data=None):
+		self.entry1.set_text("git clone https://github.com/belcocco/py.git")
+		self.entry2.set_text("")
+		self.entry3.set_text("")
 		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
-#		print CMD_git
-#		subprocess.call(["git", "push", "https://github.com/zanata/zanata.git"])
+
+#Comando GIT PUSH
+	def tog_push(self, widget, data=None):
+		self.entry1.set_text("git push https://github.com/belcocco/py.git")
+		self.entry2.set_text("")
+		self.entry3.set_text("")
+		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
 		
 	def delete_event(self, widget, event, data=None):
 		return gtk.FALSE
 	def destroy(self, widget, data=None):
 		return #gtk.main_quit()
-#	def main(self):
-#		gtk.main()
 
 class GUI_ftp():
 	def __init__(self):
@@ -863,14 +893,14 @@ class ClientFTP(object):
 startMainWin = MainWin()
 startMainWin.show_all()
 
-pres = Presentazione()
+#pres = Presentazione()
 #pres.connect("delete-event", gtk.main_quit) 
 		#Se tolgo o metto il commento influisco sulla chiusura delle finestre
 		#Se c'è: con il click in alto a destro chiudo solo la Presentazione()
 		# ovvero si chiude solo lei e non la finestra dei button o la GUI dell'applicazione
 		#se NON c'è: le finestre si chiudono tutte eseguendo un click in alto a destra.
 		#comunque tutto dipende dal LOOP PRINCIPALE [gtk.mail()] se è unico o no
-pres.show_all()
+#pres.show_all()
 #time.sleep(4)
 #opa = 10.0
 #while opa != 0.0:
