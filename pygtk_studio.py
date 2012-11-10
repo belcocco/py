@@ -187,7 +187,7 @@ class GUI_git():
 		self.win = gtk.Window(gtk.WINDOW_TOPLEVEL)
 		self.win.set_title("Git")
 #		self.win.set_default_size(200, 80)
-		self.win.set_size_request(500, 260)		#dimensione della finestra per 4 button (100,180)
+		self.win.set_size_request(500, 460)		#dimensione della finestra per 4 button (100,180)
 		self.win.set_position(gtk.WIN_POS_CENTER)
 		self.win.set_resizable(gtk.TRUE)
 		self.win.set_border_width(10)
@@ -204,18 +204,29 @@ class GUI_git():
 		self.win.add(self.vbox)
 		self.vbox.show()
 
-#2 ToggleButton per le attività CLONE e PUSH
+#ToggleButton per l'attività Clone (con il repo remoto)
 		self.tog_button_clone = gtk.ToggleButton("CLONE")
 		self.tog_button_clone.connect("clicked", self.tog_clone, "Download")
+		self.vbox.pack_start(self.tog_button_clone, gtk.TRUE, gtk.TRUE, 5)
+#Bottone Add
+		self.button_add = gtk.Button("ADD")
+		self.button_add.connect("clicked", self.tog_add, "Add")
+		self.vbox.pack_start(self.button_add, gtk.TRUE, gtk.TRUE, 0)
+#Bottone Log
+		self.button_log = gtk.Button("LOG")
+		self.button_log.connect("clicked", self.tog_log, "Log")
+		self.vbox.pack_start(self.button_log, gtk.TRUE, gtk.TRUE, 0)
+#Bottone Commit
+		self.button_commit = gtk.Button("COMMIT")
+		self.button_commit.connect("clicked", self.tog_commit, "Commit")
+		self.vbox.pack_start(self.button_commit, gtk.TRUE, gtk.TRUE, 0)
+#ToggleButton per l'attività Push (con il repo remoto)
 		self.tog_button_push = gtk.ToggleButton("PUSH")
 		self.tog_button_push.connect("clicked", self.tog_push, "Upload")
-
-		self.vbox.pack_start(self.tog_button_clone, gtk.TRUE, gtk.TRUE, 5)
 		self.vbox.pack_start(self.tog_button_push, gtk.TRUE, gtk.TRUE, 5)
 
-#Spazio per controllare l'inserimento del comando (git clone .... oppure git push.....
+#Spazio per controllare l'inserimento del comando (git clone, add, log, commit e push)
 		self.entry1 = gtk.Entry(100)
-#		self.entry1.set_text("git clone https://github.com/belcocco/py.git")
 		self.vbox.pack_start(self.entry1, gtk.TRUE, gtk.TRUE, 0)
 
 #Bottone Esegui
@@ -223,38 +234,36 @@ class GUI_git():
 		self.button_exec.connect("clicked", self.exec_git_cmd)
 		self.vbox.pack_start(self.button_exec, gtk.TRUE, gtk.TRUE, 0)
 
-#Spazio per gestire l'attività scelta (git clone .... oppure git push.....
+#Spazio per gestire l'attività scelta (git clone, add, log, commit e push)
 		self.entry2 = gtk.Entry(100)
-#		self.entry2.set_text("git clone https://github.com/belcocco/py.git")
 		self.vbox.pack_start(self.entry2, gtk.TRUE, gtk.TRUE, 0)
 
-#Spazio per gestire gli output-errori dell'attività scelta (git clone .... oppure git push.....
+#Spazio per gestire gli output-errori dell'attività scelta (git clone, add, log, commit e push)
 		self.entry3 = gtk.Entry(100)
-#		self.entry3.set_text("git clone https://github.com/belcocco/py.git")
 		self.vbox.pack_start(self.entry3, gtk.TRUE, gtk.TRUE, 0)
 
 		self.win.show_all()
 
-#Gestisce l'attività
+#Gestisce l'attività (clone, add, log, commit e push)
 	def exec_git_cmd(self, widget):
 		CMD_git = self.entry1.get_text()
 		print CMD_git
 		self.entry3.set_text("... attendere prego.")   #NON si vede. PERCHE'????
 
 		#Ciò che FUNZIONA MEGLIO. 
-		proc = subprocess.Popen(CMD_git, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+		proc = subprocess.Popen(CMD_git, shell=True) #, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
 #testare stdin
 
-		for line in proc.stderr:
-			self.entry3.set_text(line)
-			print "stderr ---->"
-			print line
-		errore = self.entry3.get_text()
-		if errore == "":
-			self.entry2.set_text("...terminato con successo !")
-		else:
-			self.entry2.set_text("...terminato con ERRORE !")
+#		for line in proc.stderr:
+#			self.entry3.set_text(line)
+#			print "stderr ---->"
+#			print line
+#		errore = self.entry3.get_text()
+#		if errore == "":
+#			self.entry2.set_text("...terminato con successo !")
+#		else:
+#			self.entry2.set_text("...terminato con ERRORE !")
 		
 #Comando GIT CLONE
 	def tog_clone(self, widget, data=None):
@@ -262,7 +271,21 @@ class GUI_git():
 		self.entry2.set_text("")
 		self.entry3.set_text("")
 		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
-
+#Comando GIT ADD
+	def tog_add(self, widget, data=None):
+		self.entry1.set_text("git add *")
+		self.entry2.set_text("")
+		self.entry3.set_text("")
+#Comando GIT LOG
+	def tog_log(self, widget, data=None):
+		self.entry1.set_text("git log | grep studio")
+		self.entry2.set_text("")
+		self.entry3.set_text("")
+#Comando GIT COMMIT
+	def tog_commit(self, widget, data=None):
+		self.entry1.set_text("git commit -m -----")
+		self.entry2.set_text("")
+		self.entry3.set_text("")
 #Comando GIT PUSH
 	def tog_push(self, widget, data=None):
 		self.entry1.set_text("git push https://github.com/belcocco/py.git")
