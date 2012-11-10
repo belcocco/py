@@ -43,9 +43,10 @@ class MainWin(gtk.Window):
         self.set_size_request(100, 260)		#dimensione della finestra per 4 button (100,180)
 #        self.set_size_request(1000, 480)
         self.set_position(gtk.WIN_POS_MOUSE)
-        self.connect("destroy", self.on_destroy)
+        color = gtk.gdk.color_parse('#C51111')    
+        self.modify_bg(gtk.STATE_NORMAL, color)    
 
-#######################################
+        self.connect("destroy", self.on_destroy)
 
         fixed = gtk.Fixed()
 
@@ -189,6 +190,8 @@ class GUI_git():
 		self.win.set_position(gtk.WIN_POS_CENTER)
 		self.win.set_resizable(gtk.TRUE)
 		self.win.set_border_width(10)
+		color = gtk.gdk.color_parse('#7885ff')    
+		self.win.modify_bg(gtk.STATE_NORMAL, color)    
 
 		self.win.connect("delete_event", self.delete_event)
 		self.win.connect("destroy", self.destroy)
@@ -234,30 +237,23 @@ class GUI_git():
 #Gestisce l'attività
 	def exec_git_cmd(self, widget):
 		CMD_git = self.entry1.get_text()
-		if self.entry3.get_text == "":
-			self.entry2.set_text("...terminato con successo !")
-			return
-		else:
-			self.entry2.set_text("...terminato con ERRORE !")
 		print CMD_git
+		self.entry3.set_text("... attendere prego.")   #NON si vede. PERCHE'????
 
-################## PROVE VARIE per usare il modulo subprocess
-#		Leggere qui: http://sharats.me/the-ever-useful-and-neat-subprocess-module.html
-#		subprocess.call(["git", "push", "https://github.com/zanata/zanata.git"])
-#		subprocess.call(["git", "push", "https://github.com/zanata/zanata.git"])
-#		subprocess.call("git clone https://github.com/belcocco/py.git", shell=True)
-#		subprocess.Popen("git "+CMD_git+"https://github.com/belcocco/py.git", shell=True)
-		#QUELLO che FUNZIONA MEGLIO. 
-		proc = subprocess.Popen(CMD_git, shell=True, stderr=PIPE) #, stdout=PIPE)
+		#Ciò che FUNZIONA MEGLIO. 
+		proc = subprocess.Popen(CMD_git, shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
-#		for line in proc.stdout:
-#			self.entry3.set_text(line)
-#			print "stdout ---->"
-#			print line
+#testare stdin
+
 		for line in proc.stderr:
 			self.entry3.set_text(line)
 			print "stderr ---->"
 			print line
+		errore = self.entry3.get_text()
+		if errore == "":
+			self.entry2.set_text("...terminato con successo !")
+		else:
+			self.entry2.set_text("...terminato con ERRORE !")
 		
 #Comando GIT CLONE
 	def tog_clone(self, widget, data=None):
@@ -289,7 +285,8 @@ class GUI_ftp():
 
 		self.win.connect("delete_event", self.delete_event)
 		self.win.connect("destroy", self.destroy)
-
+		self.win.show_all()
+		
 ######### FTP Client ############################
 #		if __name__ == '__main__':
 #		nick = raw_input('Nick:')
@@ -301,7 +298,11 @@ class GUI_ftp():
 #			obj.controlla_cmd(command)      
 #################################################
 
-        
+ 	def delete_event(self, widget, event, data=None):
+		return gtk.FALSE
+	def destroy(self, widget, data=None):
+		return #gtk.main_quit()
+       
 #        self.connect("destroy", gtk.main_quit)
 #        self.win.set_default_size(800,95)
 #        self.set_size_request(250, 150)
