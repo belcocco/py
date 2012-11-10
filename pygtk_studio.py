@@ -40,9 +40,10 @@ class MainWin(gtk.Window):
         super(MainWin, self).__init__()
         
         self.set_title("Main")
-        self.set_size_request(100, 260)		#dimensione della finestra per 4 button (100,180)
+        self.set_size_request(120, 300)		#dimensione della finestra per 4 button (100,180)
 #        self.set_size_request(1000, 480)
         self.set_position(gtk.WIN_POS_MOUSE)
+        self.labelpres = gtk.Label("Questa e' un interfaccia che racchiude esempi riassuntivi di oggetti GTK+/pyGTK")
         color = gtk.gdk.color_parse('#C51111')    
         self.modify_bg(gtk.STATE_NORMAL, color)    
 
@@ -52,37 +53,40 @@ class MainWin(gtk.Window):
 
         git = gtk.Button("Git")
         git.connect("clicked", self.on_clicked_git)
-        git.set_size_request(80, 40)
+        git.set_size_request(100, 40)
         fixed.put(git, 10, 10)
 
         ftp = gtk.Button("FTP")
         ftp.connect("clicked", self.on_clicked_ftp)
-        ftp.set_size_request(80, 40)
+        ftp.set_size_request(100, 40)
         fixed.put(ftp, 10, 50)
 
         hack = gtk.Button("Hack")
         hack.connect("clicked", self.on_clicked_hack)
-        hack.set_size_request(80, 40)
+        hack.set_size_request(100, 40)
         fixed.put(hack, 10, 90)
 
         lista = gtk.Button("List")
         lista.connect("clicked", self.on_clicked_lista)
-        lista.set_size_request(80, 40)
+        lista.set_size_request(100, 40)
         fixed.put(lista, 10, 130)
         
         foto = gtk.Button("Foto")
         foto.connect("clicked", self.on_clicked_foto)
-        foto.set_size_request(80, 40)
+        foto.set_size_request(100, 40)
         fixed.put(foto, 10, 170)
 
-        comando = gtk.Button("Comando")
-        comando.connect("clicked", self.on_clicked_comando)
-        comando.set_size_request(80, 40)
-        fixed.put(comando, 10, 210)
+        comando1 = gtk.Button("Comando1")
+        comando1.connect("clicked", self.on_clicked_comando1)
+        comando1.set_size_request(100, 40)
+        fixed.put(comando1, 10, 210)
+
+        autore = gtk.Button("Autore")
+        autore.connect("clicked", self.on_clicked_autore)
+        autore.set_size_request(100, 40)
+        fixed.put(autore, 10, 250)
 
         self.add(fixed)
-
-#        self.show_all()
         
     def on_destroy(self, widget):
         gtk.main_quit()
@@ -118,11 +122,14 @@ class MainWin(gtk.Window):
 		app = GUI_foto()    #import rinomina_foto
 		print "DOPO rinomina_foto"
 
-#		gtk.main_quit()
-
-    def on_clicked_comando(self, widget):
+    def on_clicked_comando1(self, widget):
 		#INSERIRE la procedura di apertura della finestra GUI() al click del git-button
 		import eseguicmd
+
+    def on_clicked_autore(self, widget):
+		#INSERIRE la procedura di apertura della finestra GUI() al click del git-button
+        app = Presentazione()						#si apre la finestra dell'applicazione
+        app.Presentazione.show_all()
 
 #		gtk.main_quit()
 
@@ -132,53 +139,47 @@ UI_FILE_GIT = "src/pygtk_studio_git.ui"
 UI_FILE_FTP = "src/pygtk_studio_ftp.ui"
 UI_FILE_HACK = "src/pygtk_studio_hack.ui"
 
-class Presentazione(gtk.Window):
+class Presentazione:
     def __init__(self):
-        super(Presentazione, self).__init__()
-        
-#        self.connect("destroy", self.on_destroy)    #gtk.main_quit)
-        self.set_default_size(472,365)
-        self.set_size_request(250, 150)
-        self.set_position(gtk.WIN_POS_CENTER)
-##############
-        self.connect("delete_event", self.delete_event)
-        self.connect("destroy", self.destroy)
-##############        
-#        opa = 10.0
-#        while opa != 0.0:
-#            if opa == 0.0:
-#                self.set_opacity(0)    #presentazione invisibile
-#                return
-#            opavir = float(opa / 10)
-#            print opavir
-#            time.sleep(2)
-#            self.set_opacity(opavir)
-#            opa = opa - 1
-		
-        # the scrolledwindow
-        scrolled_window = gtk.ScrolledWindow()
-        scrolled_window.set_border_width(10)
-        # there is always the scrollbar (otherwise: AUTOMATIC - only if needed - or NEVER)
-#        scrolled_window.set_policy(gtk.PolicyType.ALWAYS, gtk.PolicyType.ALWAYS)
+        self.Presentazione = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        self.Presentazione.set_title("belcocco")
+        self.Presentazione.set_default_size(700,365)
+        self.Presentazione.set_size_request(250, 150)
+        self.Presentazione.set_position(gtk.WIN_POS_CENTER)
+        self.Presentazione.connect("delete_event", self.delete_event)
+        self.Presentazione.connect("destroy", self.destroy)
 
-        # an image - slightly larger than the window...
-        image = gtk.Image()
-        image.set_from_file("/home/raga/py/Raga-auto421x316.png")
 
-        # add the image to the scrolledwindow
-        scrolled_window.add_with_viewport(image)
+        hbox = gtk.HBox(False, 0)
+        vbox1 = gtk.VBox(False, 0)
+        vbox2 = gtk.VBox(False, 0)
+        self.img = gtk.Image()
+        self.img.set_from_file('auto421x316.png')
+        self.immbutton = gtk.Button()
+        self.immbutton.add(self.img)
+        self.immbutton.connect("clicked", self.immpres)
+        self.immbuttonlbl1 = gtk.Label("e-mail: belcocco@gmail.com")
+        self.immbuttonlbl2 = gtk.Label("e-mail: ramuff@gmail.com")
+        vbox1.pack_start(self.immbutton, 10)
+        vbox2.pack_start(self.immbuttonlbl1, 10)
+        hbox.pack_start(vbox1, False, False, 10)
+        hbox.pack_start(vbox2, False, False, 10)
+        self.Presentazione.add(hbox)
+        self.Presentazione.show_all()
 
-        # add the scrolledwindow to the window
-        self.add(scrolled_window)
+    def immpres(self, widget):				#funzione contenente immagine utilizzata dalla presentazione
+        self.immpres  = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        self.immpres.set_title("Linus")
+        self.immpres.set_position(gtk.WIN_POS_CENTER)
+        img = gtk.Image()
+        img.set_from_file('torvalds-linus.jpeg')
+        self.immpres.add(img)
+        self.immpres.show_all()
 
-#    def on_destroy(self, widget):
-#        return    #gtk.main_quit()
-##############
     def delete_event(self, widget, event, data=None):
         return gtk.FALSE
     def destroy(self, widget, data=None):
         return #gtk.main_quit()
-##############
 		
 #Window per GitHub.com (Upload e Download Repository)
 class GUI_git():
@@ -893,28 +894,6 @@ class ClientFTP(object):
 #Si chiude con la 'X' in alto a destra 
 startMainWin = MainWin()
 startMainWin.show_all()
-
-#pres = Presentazione()
-#pres.connect("delete-event", gtk.main_quit) 
-		#Se tolgo o metto il commento influisco sulla chiusura delle finestre
-		#Se c'è: con il click in alto a destro chiudo solo la Presentazione()
-		# ovvero si chiude solo lei e non la finestra dei button o la GUI dell'applicazione
-		#se NON c'è: le finestre si chiudono tutte eseguendo un click in alto a destra.
-		#comunque tutto dipende dal LOOP PRINCIPALE [gtk.mail()] se è unico o no
-#pres.show_all()
-#time.sleep(4)
-#opa = 10.0
-#while opa != 0.0:
-#    opavir = opa / 10
-#    print opavir
-#    time.sleep(2)
-#    pres.set_opacity(opavir)
-#    opa = opa - 1
-#time.sleep(1)
-#pres.set_opacity(0)    #presentazione invisibile
-
-#pres.hide()
-
 
 #Questa è la finestra con gli output di tutte le attività
 #Volendo si può salvare quanto riportato in un file

@@ -20,9 +20,9 @@ class Window:		#la classe principale contenete tutte le funzoni
     def __init__(self):		#la funzione princuipale della classe
         self.win = gtk.Window(gtk.WINDOW_TOPLEVEL)		#la finestra contenitore
         self.win.set_title("Riassunto funzioni")		#setta il titolo della finestra
-	#---------------------------------------------------------------
+#---------------------------------------------------------------
 	#definisco tutte le variabili dei box
-	#----------------------------------------------------------------
+#----------------------------------------------------------------
 	vboxer = gtk.VBox(False)		
 	hbox = gtk.HBox(False)
 	hbox1 = gtk.HBox(False)
@@ -34,16 +34,14 @@ class Window:		#la classe principale contenete tutte le funzoni
 	vbox4 = gtk.VBox(False)
 	vbox5 = gtk.VBox(False)
 	
-	#-------------------------------------------------------------
-	
+#-------------------------------------------------------------
 	
 	self.win.connect("destroy", self.exit)		#assegno al pulsante destroy 
 	self.labelcent = gtk.Label("Questa e' un interfaccia che racchiude esempi riassuntivi di oggetti GTK+/pyGTK")
 	
-	#--------------------------------------------------------------
+#--------------------------------------------------------------
 	#DEFINISCO TUTTI  I BOTTONI DELLA FINESTRA
-	#--------------------------------------------------------------
-	
+#--------------------------------------------------------------
 	
 	self.button = gtk.Button(None, gtk.STOCK_QUIT)		#definisce il bottone contenete uno stock item
 	self.button.connect("clicked", self.exit)		#assegna al bottone la funzione di uscita dal programma
@@ -69,15 +67,13 @@ class Window:		#la classe principale contenete tutte le funzoni
 	self.button9 = gtk.Button("Text...")
         self.button9.connect("clicked", self.win9)
 
-	#------------------------------------------------------------------
+#------------------------------------------------------------------
 	
 	#questo frame contiene  la label :"labelcent"
 	self.frame = gtk.Frame("Introduzione")
 	self.frame.add(self.labelcent)
 	
-	#-------------------------------------------------------------------
-	
-	
+#-------------------------------------------------------------------
 	#assegno ai box gli oggetti che devono contenere
 	vbox.pack_start(self.button1, False, False, 5)
 	vbox.pack_start(self.button4, False, False, 5)
@@ -106,7 +102,6 @@ class Window:		#la classe principale contenete tutte le funzoni
 	#aggiungo a win la variabile che contiene tutte le box(vboxer)
 	self.win.add(vboxer)
         self.win.show_all()
-		
 
     def win1(self, widget):		#funzione contenete la finestra win1
 	self.win1 = gtk.Window(gtk.WINDOW_TOPLEVEL)
@@ -214,8 +209,6 @@ class Window:		#la classe principale contenete tutte le funzoni
 	else:
 		self.windtg.destroy()
    
-
-
     def tog1(self, widget, data=None): 		#funzione utilizzata dal primo toggle button
 
 	if widget.get_active():
@@ -351,9 +344,6 @@ class Window:		#la classe principale contenete tutte le funzoni
     def change_text(self, widget, data=None):	#funzione che cambia il testo quando si preme il pulsante in win3
         self.label2.set_text("Frase cambiata grazie al comando set_text")
 
-
-
-
     def win4(self, widget):					#funzione contenete la finestra win4
         self.win4 = gtk.Window(gtk.WINDOW_TOPLEVEL)
 	self.win4.set_title("Entry")
@@ -394,8 +384,7 @@ class Window:		#la classe principale contenete tutte le funzoni
 	hbox8.pack_start(self.entry2lab, True, False, 10)
 	hbox9.pack_start(self.entry3lab, True, False, 10)
 	hbox10.pack_start(self.entry4lab, True, False, 10)
-	
-	
+
 	vbox1.pack_start(hbox3, True, True, 10)
 	vbox1.pack_start(hbox4, True, True, 10)
 	vbox1.pack_start(hbox5, True, True, 10)
@@ -409,14 +398,11 @@ class Window:		#la classe principale contenete tutte le funzoni
 	hbox1.pack_start(vbox2, True, True)
 	hbox2.pack_start(self.framentry1, False, False)
 
-
-
 	vbox.pack_start(hbox1, False, False)
 	vbox.pack_start(hbox2, False, False)
 
 	self.win4.add(vbox)
 	self.win4.show_all()
-
  
     def win5(self, widget):					#funzione contenete la 5a finestra
         self.win5 = gtk.Window(gtk.WINDOW_TOPLEVEL)
@@ -439,7 +425,6 @@ class Window:		#la classe principale contenete tutte le funzoni
 	self.win5.add(hbox)
         self.win5.show_all()
 
-
     def dialogRun(self, widget): 			#funzione contenete un dialog
         self.dialog = gtk.Dialog('Sure?', self.win5, 
                     gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT, 
@@ -461,9 +446,6 @@ class Window:		#la classe principale contenete tutte le funzoni
         resp = message.run()
         if resp == gtk.RESPONSE_CLOSE:    
             message.destroy()
-
-
-
 
     def win6(self, widget):					#funzione contenete la 6a finestra
         self.win6 = gtk.Window(gtk.WINDOW_TOPLEVEL)
@@ -492,9 +474,6 @@ class Window:		#la classe principale contenete tutte le funzoni
 	vbox.pack_start(hbox2, True, False, 5)
 	self.win6.add(vbox)
 	self.win6.show_all()
-
-
-
 
     def tool(self, widget):					#funzione contentente una toolbar
 	self.wintool =gtk.Window(gtk.WINDOW_TOPLEVEL)
@@ -526,10 +505,6 @@ class Window:		#la classe principale contenete tutte le funzoni
     def wintolexit(self, widget):			#definisce l'uscita da wintooll
 	self.wintooll.destroy()
 
-
-
-
-
     def win7(self, widget):					#funzione che definisce la finestra win7
         self.win7 = gtk.Window(gtk.WINDOW_TOPLEVEL)
 	hbox = gtk.HBox(False, 0)
@@ -548,12 +523,13 @@ class Window:		#la classe principale contenete tutte le funzoni
 	self.win7.add(hbox)
 	self.win7.show_all()
 
-    def immwinn(self, widget):				#funzione contenete la finestra utilizzata in win7 contenete un immagine
+    def immwinn(self, widget):				#funzione contenente la finestra con immagine utilizzata usata in win7 e
 	self.immwin  = gtk.Window(gtk.WINDOW_TOPLEVEL)
         img = gtk.Image()
         img.set_from_file('024_1.jpg')
         self.immwin.add(img)
         self.immwin.show_all()
+
     def win8(self, widget):					#funzione contenente l'8ava finestra
         self.win8 = gtk.Window(gtk.WINDOW_TOPLEVEL)
         vbox = gtk.VBox(False, 0)
@@ -606,12 +582,12 @@ class Window:		#la classe principale contenete tutte le funzoni
 
 
     def lookwin(self, widget):				#funzione contenetela finestra aperta con il bottone in win8 
-
 	self.winlook = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.winlook.set_title('background')
         color = gtk.gdk.color_parse('#7885ff')    
         self.winlook.modify_bg(gtk.STATE_NORMAL, color)    
         self.winlook.show()
+
     def win9(self, widget):					#funzione contenete la nona finestra
 	self.win9 = gtk.Window(gtk.WINDOW_TOPLEVEL)
 	self.win9.set_default_size(500,500)
