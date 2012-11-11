@@ -248,26 +248,29 @@ class GUI_git():
 	def exec_git_cmd(self, widget):
 		CMD_git = self.entry1.get_text()
 		print CMD_git
-		self.entry3.set_text("... attendere prego.")   #NON si vede. PERCHE'????
+		self.entry3.set_text("... attendere prego.")   #Se NON si vede è perchè manca '&' alla fine del comando shell
 
-		#Ciò che FUNZIONA MEGLIO. 
+		#Esegui comando della shell. Ciò che FUNZIONA MEGLIO. 
 		proc = subprocess.Popen(CMD_git, shell=True) #, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+#		proc = subprocess.check_call(CMD_git, shell=True) #, stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
-#testare stdin
+		#Controlla se il comando è andato bene. SOLO POPEN
+		proc.wait()
+		print proc.returncode
+		if proc.returncode != 0:
+#			print "fatal: il path di destinazione 'py' esiste già e non è una directory vuota."
+			self.entry3.set_text("fatal: il path di destinazione 'py' esiste già e non è una directory vuota.")
+			self.entry2.set_text("...terminato con ERRORE !")
+#		elif:
+			# leggi il file clone.out e se il testo è diverso da 'Cloning into 'py'...' c'è stato ERRORE!!!!
+			# leggi il file clone.out e se il testo è ugluale a 'not found: did you run git update-server-info on the server? c'è stato ERRORE!!!! 
 
-#		for line in proc.stderr:
-#			self.entry3.set_text(line)
-#			print "stderr ---->"
-#			print line
-#		errore = self.entry3.get_text()
-#		if errore == "":
 #			self.entry2.set_text("...terminato con successo !")
-#		else:
-#			self.entry2.set_text("...terminato con ERRORE !")
+#			self.entry3.set_text("")
 		
 #Comando GIT CLONE
 	def tog_clone(self, widget, data=None):
-		self.entry1.set_text("git clone https://github.com/belcocco/py.git")
+		self.entry1.set_text("git clone https://github.com/belcocco/py.git > clone.out &")
 		self.entry2.set_text("")
 		self.entry3.set_text("")
 		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
@@ -288,7 +291,7 @@ class GUI_git():
 		self.entry3.set_text("")
 #Comando GIT PUSH
 	def tog_push(self, widget, data=None):
-		self.entry1.set_text("git push https://github.com/belcocco/py.git")
+		self.entry1.set_text("git push https://github.com/belcocco/py.git > push.out &")
 		self.entry2.set_text("")
 		self.entry3.set_text("")
 		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
