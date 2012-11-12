@@ -21,7 +21,7 @@
 import pygtk, gtk
 pygtk.require('2.0')
 import gtk.glade
-import os, subprocess, sys
+import os, string, subprocess, sys
 import ftplib
 import gobject
 import time
@@ -257,20 +257,36 @@ class GUI_git():
 		#Controlla se il comando è andato bene. SOLO POPEN
 		proc.wait()
 		print proc.returncode
+		str1 = "Cloning into"
+		str2 = "not found: did you run git"
 		if proc.returncode != 0:
 #			print "fatal: il path di destinazione 'py' esiste già e non è una directory vuota."
 			self.entry3.set_text("fatal: il path di destinazione 'py' esiste già e non è una directory vuota.")
 			self.entry2.set_text("...terminato con ERRORE !")
-#		elif:
-			# leggi il file clone.out e se il testo è diverso da 'Cloning into 'py'...' c'è stato ERRORE!!!!
-			# leggi il file clone.out e se il testo è ugluale a 'not found: did you run git update-server-info on the server? c'è stato ERRORE!!!! 
+		
+		# Guarda nel file clone.out se il testo è != da 'Cloning into 'py'...' c'è stato ERRORE!!!!
+		# Guarda nel file clone.out se il testo è = a 'not found: did you run git update-server-info on the server? c'è stato ERRORE!!!! 
+		cmd = 'find . -name "clone.out" -print'    # find is a standard Unix tool
+ 
+		for file in os.popen(cmd).readlines():     # run find command
+			num  = 1
+			name = file[:-1]                       # strip '\n'
+			for line in open(name).readlines():    # scan the file
+				#pos = string.find(line, "\t")
+				pos = string.find(line, str1)		#"Cloning into" o "not found: did you run git"
+				if  pos >= 0:
+					print name			#, num, pos           # report tab found
+					print line[:-1]        # [:-1] strips final \n
+					print '£££', ' '*pos + '*', '\n'
+				num = num+1
+		print "TUTTO OK CON CERCASTRINGA"
 
 #			self.entry2.set_text("...terminato con successo !")
 #			self.entry3.set_text("")
 		
 #Comando GIT CLONE
 	def tog_clone(self, widget, data=None):
-		self.entry1.set_text("git clone https://github.com/belcocco/py.git > clone.out &")
+		self.entry1.set_text("git clone https://github.com/belcocco/py.git > clone.out")
 		self.entry2.set_text("")
 		self.entry3.set_text("")
 		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
@@ -295,6 +311,7 @@ class GUI_git():
 		self.entry2.set_text("")
 		self.entry3.set_text("")
 		print "%s e' ora %s" % (data, ("OFF", "ON")[widget.get_active()])
+
 		
 	def delete_event(self, widget, event, data=None):
 		return gtk.FALSE
